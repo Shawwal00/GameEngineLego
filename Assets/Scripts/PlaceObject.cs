@@ -15,7 +15,7 @@ public class PlaceObject : MonoBehaviour
     // public GameObject wings;
     // public GameObject jet;
 
-    private GameObject cursor; 
+    private float cursorSpeed;
 
     private void Awake()
     {
@@ -29,7 +29,6 @@ public class PlaceObject : MonoBehaviour
         // wings.gameObject.tag = "wings";
         // jet.gameObject.tag = "jet";
         
-        cursor = GameObject.Find("Cursor");
     }
 
     private void Update()
@@ -39,12 +38,12 @@ public class PlaceObject : MonoBehaviour
 
     private void moveCursor()
     {
-        Vector3 cursorPosition = cursor.transform.position;
+        cursorSpeed = 5;
         //The below controls the cursor
         if (Input.GetKeyDown(KeyCode.A))
         {
-            cursorPosition.x =  10;
-            Debug.Log("GG");
+            transform.Translate(Vector3.right * (Time.deltaTime * cursorSpeed), Space.World);
+            Debug.Log("Cursor");
         }
     }
 }
