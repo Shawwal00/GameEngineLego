@@ -15,8 +15,13 @@ public class PlaceObject : MonoBehaviour
     // public GameObject wings;
     // public GameObject jet;
 
-    private float cursorSpeed;
+    public GameObject gridBlock;
 
+    public static int gridx = 5;
+    public static int gridy = 5;
+    public static int gridz = 5;
+    private int [, ,] grid = new int[gridx,gridy,gridz];  
+    
     private void Awake()
     {
         //In the game I can check how many specific objects are in it by using the tags.
@@ -28,7 +33,12 @@ public class PlaceObject : MonoBehaviour
         // seat.gameObject.tag = "seat";
         // wings.gameObject.tag = "wings";
         // jet.gameObject.tag = "jet";
-        
+
+    }
+
+    private void Start()
+    {
+        makeGrid();
     }
 
     private void Update()
@@ -38,12 +48,40 @@ public class PlaceObject : MonoBehaviour
 
     private void moveCursor()
     {
-        cursorSpeed = 5;
         //The below controls the cursor
         if (Input.GetKeyDown(KeyCode.A))
         {
-            transform.Translate(Vector3.right * (Time.deltaTime * cursorSpeed), Space.World);
-            Debug.Log("Cursor");
+
+        }
+    }
+
+    private void makeGrid()
+    {
+        Vector3 firstpos = transform.position;
+        Vector3 startpos = transform.position;
+        for (int e = 0; e < gridy; e++)
+        {
+            if (e > 0)
+            {
+                transform.position = firstpos + new Vector3(0, e, 0);
+                startpos = transform.position;
+            }
+            
+            for (int d = 0; d < gridx; d++)
+            {
+                transform.position = startpos;
+                if (d > 0)
+                {
+                    transform.position = transform.position + new Vector3(-d, 0, 0);
+                }
+
+                for (int i = 0; i < gridz; i++)
+                {
+                    Instantiate(gridBlock, transform.position, transform.rotation);
+                    transform.position = transform.position + Vector3.forward;
+
+                }
+            }
         }
     }
 }
