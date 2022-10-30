@@ -89,21 +89,21 @@ public class PlaceObject : MonoBehaviour
                 firstBlock = true;
             }
 
-            if (firstBlock == true)
+            else if (firstBlock == true)
             {
-                float sd = 5000;
+                //float raycastLine = 10;
                 //Do a raycast and see if a block is nearby
-                Ray cursorRay = new Ray(transform.position, cursorVector);
-                RaycastHit hit;
-                Debug.DrawRay(transform.position, cursorVector, Color.green, sd);
-
-                for (int i = 0; i < 6; i++)
+                // Debug.DrawRay(transform.position, cursorVector, Color.green, raycastLine);
+               for (int i = 0; i < 6; i++)
                 {
+                    Ray cursorRay = new Ray(transform.position, cursorVector);
+                    RaycastHit hit;
                     if (Physics.Raycast(cursorRay, out hit))
                     {
-                        if (hit.distance < 0.5)
+                        if (hit.distance < 1)
                         {
                             Instantiate(gridBlock, cursor.transform.position, cursor.transform.rotation);
+                            i = 6;
                         }
                     }
                 }
