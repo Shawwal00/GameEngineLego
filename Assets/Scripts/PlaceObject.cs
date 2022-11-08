@@ -8,8 +8,7 @@ public class PlaceObject : MonoBehaviour
     //Theses are all public so that the user can change these to their own assets.
 
     // [SerializeField] public GameObject wheel;
-    // [SerializeField] public GameObject baseBlock;
-    // [SerializeField] public GameObject engine;
+     [SerializeField] public GameObject engine;
     // [SerializeField] public GameObject fuel;
     // [SerializeField] public GameObject seat;
     // [SerializeField] public GameObject wings;
@@ -19,15 +18,16 @@ public class PlaceObject : MonoBehaviour
     private GameObject cursor;
 
     private bool firstBlock = false;
-
-    Vector3 cursorVector = new Vector3(-1,0,0);
+    private int currentBuildingObject = 0;
+    private int buildingLimitMax;
+    private List<Vector3> cursorVector {get; set;}
+    private List<GameObject> buildingObjects { get; set; }
     
     private void Awake()
     {
         //In the game I can check how many specific objects are in it by using the tags.
 
         // wheel.gameObject.tag = "wheel";
-        // baseBlock.gameObject.tag = "baseBlock";
         // engine.gameObject.tag = "engine";
         // fuel.gameObject.tag = "fuel";
         // seat.gameObject.tag = "seat";
@@ -36,13 +36,22 @@ public class PlaceObject : MonoBehaviour
 
         cursor = GameObject.Find("Cursor");
 
-    }
+        cursorVector = new List<Vector3>();
+        cursorVector.Add( new Vector3(-1,0,0));
+        cursorVector.Add( new Vector3(1,0,0));
+        cursorVector.Add( new Vector3(0,1,0));
+        cursorVector.Add( new Vector3(0,-1,0));
+        cursorVector.Add( new Vector3(0,0,1));
+        cursorVector.Add( new Vector3(0,0,-1));
 
-    private void Start()
-    {
-       
-    }
+        buildingObjects = new List<GameObject>();
+        buildingObjects.Add(gridBlock);
+        buildingObjects.Add(engine);
 
+        buildingLimitMax = buildingObjects.Count - 1;
+        
+    }
+    
     private void Update()
     {
         moveCursor();
@@ -80,32 +89,63 @@ public class PlaceObject : MonoBehaviour
         {
             cursor.transform.position = cursor.transform.position + Vector3.right;
         }
+        
+        // this changes the building block
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            currentBuildingObject = currentBuildingObject + 1;
+            if (currentBuildingObject > buildingLimitMax)
+            {
+                currentBuildingObject = 0;
+            }
+            Debug.Log(currentBuildingObject);
+        }
+        
+        if (Input.GetKeyDown(KeyCode.K))
+        {
+            currentBuildingObject = currentBuildingObject - 1;
+            if (currentBuildingObject < 0)
+            {
+                currentBuildingObject = buildingLimitMax;
+            }
+            Debug.Log(currentBuildingObject);
+        }
 
         if (Input.GetKeyDown(KeyCode.E))
         {
             if (firstBlock == false)
             {
-                Instantiate(gridBlock, cursor.transform.position, cursor.transform.rotation);
+                Instantiate(buildingObjects[currentBuildingObject], cursor.transform.position, cursor.transform.rotation);
                 firstBlock = true;
             }
 
             else if (firstBlock == true)
             {
-                //float raycastLine = 10;
-                //Do a raycast and see if a block is nearby
-                // Debug.DrawRay(transform.position, cursorVector, Color.green, raycastLine);
-               for (int i = 0; i < 6; i++)
+                float raycastLine = 10; 
+                Collider[] checkDoubleCollider = Physics.OverlapSphere(transform.position, 0.1f);
+                if (checkDoubleCollider.Length > 1)
+                { 
+                    Destroy(checkDoubleCollider[1].gameObject);
+                    Instantiate(buildingObjects[currentBuildingObject], cursor.transform.position, cursor.transform.rotation);
+                }
+
+                else
                 {
-                    Ray cursorRay = new Ray(transform.position, cursorVector);
-                    RaycastHit hit;
-                    if (Physics.Raycast(cursorRay, out hit))
+                    //Do a raycast and see if a block is nearby
+                    for (int i = 0; i < 6; i++)
                     {
-                        if (hit.distance < 1)
+                        Debug.DrawRay(transform.position, cursorVector[i], Color.green, raycastLine);
+                        Ray cursorRay = new Ray(transform.position, cursorVector[i]);
+                        RaycastHit hit;
+                        if (Physics.Raycast(cursorRay, out hit))
                         {
-                            Instantiate(gridBlock, cursor.transform.position, cursor.transform.rotation);
-                            i = 6;
+                            if (hit.distance < 1)
+                            {
+                                Instantiate(buildingObjects[currentBuildingObject], cursor.transform.position, cursor.transform.rotation);
+                                i = 6;
+                            }
                         }
-                    }
+                    }   
                 }
             }
         }
