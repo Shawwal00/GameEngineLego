@@ -241,14 +241,21 @@ public class PlaceObject : MonoBehaviour
         
         else
         {
-            cursorLayout = 0;
             seatCursorMove = false;
             fuelCursorMove = false;
             transform.localScale = new Vector3(1,1,1);
             if (otherCursorMove == false)
             {
-                cursor.transform.position = cursor.transform.position + new Vector3(0, 0.5f, 0);
+                if (cursorLayout == 1)
+                {
+                    cursor.transform.position = cursor.transform.position + new Vector3(-0.5f, 0f, 0);
+                }
+                else
+                {
+                    cursor.transform.position = cursor.transform.position + new Vector3(0, 0.5f, 0);
+                }
                 otherCursorMove = true;
+                cursorLayout = 0;
             }
         }
     }
