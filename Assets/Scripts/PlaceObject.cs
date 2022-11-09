@@ -7,10 +7,10 @@ public class PlaceObject : MonoBehaviour
 {
     //Theses are all public so that the user can change these to their own assets.
 
-    // [SerializeField] public GameObject wheel;
+     [SerializeField] public GameObject wheel;
      [SerializeField] public GameObject engine;
-    // [SerializeField] public GameObject fuel;
-    // [SerializeField] public GameObject seat;
+     [SerializeField] public GameObject fuel;
+     [SerializeField] public GameObject seat;
     // [SerializeField] public GameObject wings;
     // [SerializeField] public GameObject jet;
 
@@ -18,22 +18,23 @@ public class PlaceObject : MonoBehaviour
     private GameObject cursor;
 
     private bool firstBlock = false;
+    
+    private bool seatCursorMove = false;
+    private bool fuelCursorMove = false;
+    private bool otherCursorMove = false;
+
+    private bool seatPlaced = false;
+    
     private int currentBuildingObject = 0;
+    private int cursorLayout = 0;
     private int buildingLimitMax;
     private List<Vector3> cursorVector {get; set;}
     private List<GameObject> buildingObjects { get; set; }
     
     private void Awake()
     {
-        //In the game I can check how many specific objects are in it by using the tags.
-
-        // wheel.gameObject.tag = "wheel";
-        // engine.gameObject.tag = "engine";
-        // fuel.gameObject.tag = "fuel";
-        // seat.gameObject.tag = "seat";
-        // wings.gameObject.tag = "wings";
-        // jet.gameObject.tag = "jet";
-
+        seat.tag = "Seat";
+        
         cursor = GameObject.Find("Cursor");
 
         cursorVector = new List<Vector3>();
@@ -47,6 +48,9 @@ public class PlaceObject : MonoBehaviour
         buildingObjects = new List<GameObject>();
         buildingObjects.Add(gridBlock);
         buildingObjects.Add(engine);
+        buildingObjects.Add(wheel);
+        buildingObjects.Add(fuel);
+        buildingObjects.Add(seat);
 
         buildingLimitMax = buildingObjects.Count - 1;
         
@@ -55,6 +59,8 @@ public class PlaceObject : MonoBehaviour
     private void Update()
     {
         moveCursor();
+        placeObject();
+        switchCursor();
     }
 
     private void moveCursor()
@@ -89,7 +95,11 @@ public class PlaceObject : MonoBehaviour
         {
             cursor.transform.position = cursor.transform.position + Vector3.right;
         }
-        
+    }
+
+    private void placeObject()
+    {
+
         // this changes the building block
         if (Input.GetKeyDown(KeyCode.L))
         {
@@ -98,9 +108,10 @@ public class PlaceObject : MonoBehaviour
             {
                 currentBuildingObject = 0;
             }
+
             Debug.Log(currentBuildingObject);
         }
-        
+
         if (Input.GetKeyDown(KeyCode.K))
         {
             currentBuildingObject = currentBuildingObject - 1;
@@ -108,29 +119,62 @@ public class PlaceObject : MonoBehaviour
             {
                 currentBuildingObject = buildingLimitMax;
             }
+
             Debug.Log(currentBuildingObject);
+        }
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            Collider[] deleteCollider = Physics.OverlapSphere(transform.position, 0.1f);
+            if (deleteCollider.Length > 1)
+            {
+                for (int i = 1; i < deleteCollider.Length; i++)
+                {
+                    if (deleteCollider[i].CompareTag("Seat"))
+                    {
+                        seatPlaced = false;
+                    }
+                    Destroy(deleteCollider[i].gameObject);
+                }
+            }
         }
 
         if (Input.GetKeyDown(KeyCode.E))
         {
+            Debug.Log(seatPlaced);
+
             if (firstBlock == false)
             {
-                Instantiate(buildingObjects[currentBuildingObject], cursor.transform.position, cursor.transform.rotation);
+                Instantiate(buildingObjects[currentBuildingObject], cursor.transform.position,
+                    cursor.transform.rotation);
                 firstBlock = true;
             }
 
-            else if (firstBlock == true)
+            if (firstBlock == true)
             {
-                float raycastLine = 10; 
                 Collider[] checkDoubleCollider = Physics.OverlapSphere(transform.position, 0.1f);
                 if (checkDoubleCollider.Length > 1)
-                { 
-                    Destroy(checkDoubleCollider[1].gameObject);
-                    Instantiate(buildingObjects[currentBuildingObject], cursor.transform.position, cursor.transform.rotation);
+                {
+                    for (int i = 1; i < checkDoubleCollider.Length; i++)
+                    {
+                        if (checkDoubleCollider[i].CompareTag("Seat"))
+                        {
+                            seatPlaced = false;
+                        }
+
+                        if (!checkDoubleCollider[i].CompareTag("Cursor"))
+                        {
+                            Destroy(checkDoubleCollider[i].gameObject);
+                        }
+                    }
+                    
+                    Instantiate(buildingObjects[currentBuildingObject], cursor.transform.position,
+                            cursor.transform.rotation);
                 }
 
                 else
                 {
+                    float raycastLine = 10;
                     //Do a raycast and see if a block is nearby
                     for (int i = 0; i < 6; i++)
                     {
@@ -139,14 +183,72 @@ public class PlaceObject : MonoBehaviour
                         RaycastHit hit;
                         if (Physics.Raycast(cursorRay, out hit))
                         {
-                            if (hit.distance < 1)
-                            {
-                                Instantiate(buildingObjects[currentBuildingObject], cursor.transform.position, cursor.transform.rotation);
-                                i = 6;
+                            if (hit.distance < 1.5)
+                            { 
+                                Instantiate(buildingObjects[currentBuildingObject], cursor.transform.position,
+                                        cursor.transform.rotation);
+                                    i = 6;
                             }
                         }
-                    }   
+                    }
                 }
+            }
+        }
+    }
+
+    private void switchCursor()
+    {
+        
+        if (currentBuildingObject == 3)
+        {
+            otherCursorMove = false;
+            seatCursorMove = false;
+            transform.localScale = new Vector3(2, 1, 1);
+            if (fuelCursorMove == false)
+            {
+                if (cursorLayout == 0)
+                {
+                    cursor.transform.position = cursor.transform.position + new Vector3(0.5f,0,0);
+                }
+                else if (cursorLayout == 2)
+                {
+                    cursor.transform.position = cursor.transform.position + new Vector3(0.5f,-0.5f,0);
+                }
+                fuelCursorMove = true;
+                cursorLayout = 1;
+            }
+        }
+
+        else if (currentBuildingObject == 4)
+        {
+            otherCursorMove = false;
+            fuelCursorMove = false;
+            transform.localScale = new Vector3(1, 2, 1);
+            if (seatCursorMove == false)
+            {
+                if (cursorLayout == 0)
+                {
+                    cursor.transform.position = cursor.transform.position + new Vector3(0,0.5f,0);
+                }
+                else if (cursorLayout == 1)
+                {
+                    cursor.transform.position = cursor.transform.position + new Vector3(-0.5f,0.5f,0);
+                }
+                seatCursorMove = true;
+                cursorLayout = 2;
+            }
+        }
+        
+        else
+        {
+            cursorLayout = 0;
+            seatCursorMove = false;
+            fuelCursorMove = false;
+            transform.localScale = new Vector3(1,1,1);
+            if (otherCursorMove == false)
+            {
+                cursor.transform.position = cursor.transform.position + new Vector3(0, 0.5f, 0);
+                otherCursorMove = true;
             }
         }
     }

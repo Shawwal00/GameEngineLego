@@ -179,6 +179,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Cursor
       objectReference: {fileID: 0}
+    - target: {fileID: 6337725854504518428, guid: 2f116af0990a43e41913241cc7bc34d9, type: 3}
+      propertyPath: m_TagString
+      value: Cursor
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_AddedGameObjects: []
   m_SourcePrefab: {fileID: 100100000, guid: 2f116af0990a43e41913241cc7bc34d9, type: 3}
@@ -243,7 +247,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a503595f774bc649a00871e573f0bdb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  wheel: {fileID: 5060348456822018602, guid: 5741e7edab63bf248ad533d48c2e7545, type: 3}
   engine: {fileID: 5060348456822018602, guid: ad62e3bf3fe081c409f75984883f4886, type: 3}
+  fuel: {fileID: 5060348456822018602, guid: 5e1da265e5d1eab49aa6cab71da43fc2, type: 3}
+  seat: {fileID: 5060348456822018602, guid: 832e2b67b5c71f14397d4649ffad7cba, type: 3}
   gridBlock: {fileID: 5060348456822018602, guid: 627a086b753f6f047b7b69d9602d23cf, type: 3}
 --- !u!1 &715243803
 GameObject:
