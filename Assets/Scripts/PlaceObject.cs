@@ -128,13 +128,17 @@ public class PlaceObject : MonoBehaviour
             Collider[] deleteCollider = Physics.OverlapSphere(transform.position, 0.1f);
             if (deleteCollider.Length > 1)
             {
-                for (int i = 1; i < deleteCollider.Length; i++)
+                for (int i = 0; i < deleteCollider.Length; i++)
                 {
                     if (deleteCollider[i].CompareTag("Seat"))
                     {
                         seatPlaced = false;
                     }
-                    Destroy(deleteCollider[i].gameObject);
+
+                    if (!deleteCollider[i].CompareTag("Cursor"))
+                    {
+                        Destroy(deleteCollider[i].gameObject);
+                    }
                 }
             }
         }
@@ -155,8 +159,9 @@ public class PlaceObject : MonoBehaviour
                 Collider[] checkDoubleCollider = Physics.OverlapSphere(transform.position, 0.1f);
                 if (checkDoubleCollider.Length > 1)
                 {
-                    for (int i = 1; i < checkDoubleCollider.Length; i++)
+                    for (int i = 0; i < checkDoubleCollider.Length; i++)
                     {
+                        Debug.Log("asd");
                         if (checkDoubleCollider[i].CompareTag("Seat"))
                         {
                             seatPlaced = false;
@@ -167,9 +172,9 @@ public class PlaceObject : MonoBehaviour
                             Destroy(checkDoubleCollider[i].gameObject);
                         }
                     }
-                    
+
                     Instantiate(buildingObjects[currentBuildingObject], cursor.transform.position,
-                            cursor.transform.rotation);
+                        cursor.transform.rotation);
                 }
 
                 else
@@ -184,16 +189,17 @@ public class PlaceObject : MonoBehaviour
                         if (Physics.Raycast(cursorRay, out hit))
                         {
                             if (hit.distance < 1.5)
-                            { 
+                            {
                                 Instantiate(buildingObjects[currentBuildingObject], cursor.transform.position,
-                                        cursor.transform.rotation);
-                                    i = 6;
+                                    cursor.transform.rotation);
+                                i = 6;
                             }
                         }
                     }
                 }
             }
         }
+
     }
 
     private void switchCursor()
