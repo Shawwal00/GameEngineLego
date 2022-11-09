@@ -143,6 +143,7 @@ public class PlaceObject : MonoBehaviour
             }
         }
 
+        //Placing the building block
         if (Input.GetKeyDown(KeyCode.E))
         {
             Debug.Log(seatPlaced);
@@ -154,14 +155,13 @@ public class PlaceObject : MonoBehaviour
                 firstBlock = true;
             }
 
-            if (firstBlock == true)
+            else if (firstBlock == true)
             {
                 Collider[] checkDoubleCollider = Physics.OverlapSphere(transform.position, 0.1f);
                 if (checkDoubleCollider.Length > 1)
                 {
                     for (int i = 0; i < checkDoubleCollider.Length; i++)
                     {
-                        Debug.Log("asd");
                         if (checkDoubleCollider[i].CompareTag("Seat"))
                         {
                             seatPlaced = false;
@@ -173,8 +173,21 @@ public class PlaceObject : MonoBehaviour
                         }
                     }
 
-                    Instantiate(buildingObjects[currentBuildingObject], cursor.transform.position,
-                        cursor.transform.rotation);
+                    if (seatPlaced == true && buildingObjects[currentBuildingObject].CompareTag("Seat"))
+                    {
+                        
+                    }
+                    
+                    else 
+                    {
+                        if (buildingObjects[currentBuildingObject].CompareTag("Seat") && seatPlaced == false)
+                        {
+                            seatPlaced = true;
+                        }
+                        Instantiate(buildingObjects[currentBuildingObject], cursor.transform.position,
+                            cursor.transform.rotation);
+                    }
+                    
                 }
 
                 else
@@ -190,9 +203,21 @@ public class PlaceObject : MonoBehaviour
                         {
                             if (hit.distance < 1.5)
                             {
-                                Instantiate(buildingObjects[currentBuildingObject], cursor.transform.position,
-                                    cursor.transform.rotation);
-                                i = 6;
+                                if (seatPlaced == true && buildingObjects[currentBuildingObject].CompareTag("Seat"))
+                                {
+                        
+                                }
+                                
+                                else 
+                                {
+                                    if (buildingObjects[currentBuildingObject].CompareTag("Seat") && seatPlaced == false)
+                                    {
+                                        seatPlaced = true;
+                                    }
+                                    Instantiate(buildingObjects[currentBuildingObject], cursor.transform.position,
+                                        cursor.transform.rotation);
+                                    i = 6; 
+                                }
                             }
                         }
                     }
