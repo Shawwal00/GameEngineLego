@@ -9,35 +9,41 @@ public class PlaceObject : MonoBehaviour
 {
     //Theses are all public so that the user can change these to their own assets.
 
-     [SerializeField] public GameObject wheel;
-     [SerializeField] public GameObject engine;
-     [SerializeField] public GameObject fuel;
-     [SerializeField] public GameObject seat;
+    [SerializeField] public GameObject wheel;
+    [SerializeField] public GameObject engine;
+    [SerializeField] public GameObject fuel;
+    [SerializeField] public GameObject seat;
     // [SerializeField] public GameObject wings;
     // [SerializeField] public GameObject jet;
     [SerializeField] public GameObject gridBlock;
 
     private TextMeshProUGUI blockText;
-    
+
     private GameObject cursor;
 
     private bool firstBlock = false;
-    
+
     private bool seatCursorMove = false;
     private bool fuelCursorMove = false;
     private bool otherCursorMove = false;
 
     private bool seatPlaced = false;
-    
+
     private int currentBuildingObject = 0;
     private int cursorLayout = 0;
     private int buildingLimitMax;
-    private List<Vector3> cursorVector {get; set;}
+    private List<Vector3> cursorVector { get; set; }
     private List<GameObject> buildingObjects { get; set; }
-    
+
+    public List<GameObject> vehicleBlocks {get; set;} 
+        
     private void Awake()
     {
         seat.tag = "Seat";
+        gridBlock.tag = "BaseBlock";
+        engine.tag = "Engine";
+        wheel.tag = "Wheel";
+        fuel.tag = "Fuel";
         
         cursor = GameObject.Find("Cursor");
 
@@ -130,6 +136,7 @@ public class PlaceObject : MonoBehaviour
             Debug.Log(currentBuildingObject);
         }
 
+        // This is the delete key
         if (Input.GetKeyDown(KeyCode.R))
         {
             Collider[] deleteCollider = Physics.OverlapSphere(transform.position, 0.1f);
@@ -164,6 +171,7 @@ public class PlaceObject : MonoBehaviour
 
             else if (firstBlock == true)
             {
+                // Checks to see if there is already a bloc there and if so it will delete it.
                 Collider[] checkDoubleCollider = Physics.OverlapSphere(transform.position, 0.1f);
                 if (checkDoubleCollider.Length > 1)
                 {
@@ -236,6 +244,7 @@ public class PlaceObject : MonoBehaviour
 
     private void switchCursor()
     {
+        // This method will ensure that the blocks are always alligned 
         
         if (currentBuildingObject == 3)
         {
@@ -325,6 +334,7 @@ public class PlaceObject : MonoBehaviour
             blockText.text = "This is a Seat Block";
         }
     }
+
 }
 
 
