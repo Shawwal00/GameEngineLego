@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlaceObject : MonoBehaviour
 {
@@ -13,8 +15,10 @@ public class PlaceObject : MonoBehaviour
      [SerializeField] public GameObject seat;
     // [SerializeField] public GameObject wings;
     // [SerializeField] public GameObject jet;
-
     [SerializeField] public GameObject gridBlock;
+
+    private TextMeshProUGUI blockText;
+    
     private GameObject cursor;
 
     private bool firstBlock = false;
@@ -53,7 +57,9 @@ public class PlaceObject : MonoBehaviour
         buildingObjects.Add(seat);
 
         buildingLimitMax = buildingObjects.Count - 1;
-        
+
+        blockText = GameObject.Find("CurrentBlock").GetComponent<TextMeshProUGUI>();
+
     }
     
     private void Update()
@@ -61,6 +67,7 @@ public class PlaceObject : MonoBehaviour
         moveCursor();
         placeObject();
         switchCursor();
+        uiText();
     }
 
     private void moveCursor()
@@ -290,4 +297,34 @@ public class PlaceObject : MonoBehaviour
             }
         }
     }
+    
+    private void uiText()
+    {
+        if (currentBuildingObject == 0)
+        {
+            blockText.text = "This is a Base Block";
+        }
+        
+        else if (currentBuildingObject == 1)
+        {
+            blockText.text = "This is a Engine Block";
+        }
+        
+        else if (currentBuildingObject == 2)
+        {
+            blockText.text = "This is a Wheel Block";
+        }
+        
+        else if (currentBuildingObject == 3)
+        {
+            blockText.text = "This is a Fuel Block";
+        }
+        
+        else if (currentBuildingObject == 4)
+        {
+            blockText.text = "This is a Seat Block";
+        }
+    }
 }
+
+
