@@ -12,6 +12,8 @@ public class GameManager : MonoBehaviour
     private GameObject overallBody;
     private GameObject finalSeat;
 
+    [SerializeField] public PlaceObject objectList;
+
 
     private void Awake()
     {
@@ -19,16 +21,29 @@ public class GameManager : MonoBehaviour
         saveButton.onClick.AddListener(saveCreation);
 
         overallBody = GameObject.Find("OveralBody");
-    
-
+        
+        
     }
 
     private void saveCreation()
     {
         finalSeat = GameObject.FindGameObjectWithTag("Seat");
-        overallBody.transform.position = finalSeat.transform.position;
-        // Create Empty GameObject and set all the blocks as children under it
-        
+        // Debug Final seat if empty throw message 
+        if (finalSeat == null)
+        {
+            Debug.Log("A seat is required");
+        }
+        else
+        {
+           
+            overallBody.transform.position = finalSeat.transform.position;
+            // Create Empty GameObject and set all the blocks as children under it
+            for (int i = 0; i < objectList.vehicleBlocks.Count; i++)
+            {
+                objectList.vehicleBlocks[i].transform.SetParent(overallBody.transform);
+            }
+           
+        }
 
     }
 }

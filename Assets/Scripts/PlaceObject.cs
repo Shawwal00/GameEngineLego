@@ -35,7 +35,8 @@ public class PlaceObject : MonoBehaviour
     private List<Vector3> cursorVector { get; set; }
     private List<GameObject> buildingObjects { get; set; }
 
-    public List<GameObject> vehicleBlocks {get; set;} 
+    public List<GameObject> vehicleBlocks {get; set;}
+    private GameObject blockCopy;
         
     private void Awake()
     {
@@ -65,6 +66,8 @@ public class PlaceObject : MonoBehaviour
         buildingLimitMax = buildingObjects.Count - 1;
 
         blockText = GameObject.Find("CurrentBlock").GetComponent<TextMeshProUGUI>();
+
+        vehicleBlocks = new List<GameObject>();
 
     }
     
@@ -151,7 +154,8 @@ public class PlaceObject : MonoBehaviour
 
                     if (!deleteCollider[i].CompareTag("Cursor"))
                     {
-                        Destroy(deleteCollider[i].gameObject);
+                        Destroy(blockCopy = deleteCollider[i].gameObject);
+                        vehicleBlocks.Add(blockCopy);
                     }
                 }
             }
@@ -164,9 +168,10 @@ public class PlaceObject : MonoBehaviour
 
             if (firstBlock == false)
             {
-                Instantiate(buildingObjects[currentBuildingObject], cursor.transform.position,
+                blockCopy = Instantiate(buildingObjects[currentBuildingObject], cursor.transform.position,
                     cursor.transform.rotation);
                 firstBlock = true;
+                vehicleBlocks.Add(blockCopy);
             }
 
             else if (firstBlock == true)
@@ -184,7 +189,8 @@ public class PlaceObject : MonoBehaviour
 
                         if (!checkDoubleCollider[i].CompareTag("Cursor"))
                         {
-                            Destroy(checkDoubleCollider[i].gameObject);
+                            Destroy(blockCopy = checkDoubleCollider[i].gameObject);
+                            vehicleBlocks.Add(blockCopy);
                         }
                     }
 
@@ -199,8 +205,9 @@ public class PlaceObject : MonoBehaviour
                         {
                             seatPlaced = true;
                         }
-                        Instantiate(buildingObjects[currentBuildingObject], cursor.transform.position,
+                        blockCopy =  Instantiate(buildingObjects[currentBuildingObject], cursor.transform.position,
                             cursor.transform.rotation);
+                        vehicleBlocks.Add(blockCopy);
                     }
                     
                 }
@@ -229,9 +236,10 @@ public class PlaceObject : MonoBehaviour
                                     {
                                         seatPlaced = true;
                                     }
-                                    Instantiate(buildingObjects[currentBuildingObject], cursor.transform.position,
+                                    blockCopy = Instantiate(buildingObjects[currentBuildingObject], cursor.transform.position,
                                         cursor.transform.rotation);
                                     i = 6; 
+                                    vehicleBlocks.Add(blockCopy);
                                 }
                             }
                         }
