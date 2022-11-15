@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System;
+using UnityEditor;
 
 public class GameManager : MonoBehaviour
 {
@@ -13,6 +14,8 @@ public class GameManager : MonoBehaviour
     private GameObject finalSeat;
 
     [SerializeField] public PlaceObject objectList;
+    
+    private string savePath;
 
 
     private void Awake()
@@ -35,14 +38,16 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-           
             overallBody.transform.position = finalSeat.transform.position;
             // Create Empty GameObject and set all the blocks as children under it
             for (int i = 0; i < objectList.vehicleBlocks.Count; i++)
             {
                 objectList.vehicleBlocks[i].transform.SetParent(overallBody.transform);
             }
-           
+
+            savePath = "Assets/MachineSaves/Vehicle.prefab";
+            savePath = AssetDatabase.GenerateUniqueAssetPath(savePath);
+            PrefabUtility.SaveAsPrefabAsset(overallBody, savePath);
         }
 
     }
