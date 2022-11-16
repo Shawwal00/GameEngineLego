@@ -43,11 +43,18 @@ public class GameManager : MonoBehaviour
             for (int i = 0; i < objectList.vehicleBlocks.Count; i++)
             {
                 objectList.vehicleBlocks[i].transform.SetParent(overallBody.transform);
+                if (objectList.vehicleBlocks[i].tag == "Wheel")
+                {
+                    objectList.vehicleBlocks[i].AddComponent<WheelScript>();
+                }
             }
 
+            overallBody.AddComponent<VehicleMovement>();
+            overallBody.tag = "Vehicle";
             savePath = "Assets/MachineSaves/Vehicle.prefab";
             savePath = AssetDatabase.GenerateUniqueAssetPath(savePath);
             PrefabUtility.SaveAsPrefabAsset(overallBody, savePath);
+            
         }
 
     }
