@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 using System;
 using UnityEditor;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -58,7 +59,8 @@ public class GameManager : MonoBehaviour
             savePath = "Assets/MachineSaves/Vehicle.prefab";
             savePath = AssetDatabase.GenerateUniqueAssetPath(savePath);
             PrefabUtility.SaveAsPrefabAsset(overallBody, savePath);
-            
+
+            SceneManager.LoadScene("VehicleTestScene");
         }
 
     }

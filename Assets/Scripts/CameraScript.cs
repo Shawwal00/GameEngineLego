@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class CameraScript : MonoBehaviour
 {
@@ -12,9 +13,16 @@ public class CameraScript : MonoBehaviour
     private float mouseZ;
     private Vector3 offset;
 
+    private Scene currentScene;
 
     private void Start()
     {
+        currentScene = SceneManager.GetActiveScene();
+        if (currentScene.name == "VehicleTestScene")
+        {
+            target = GameObject.FindWithTag("Vehicle");
+        }
+
         offset = transform.position - target.transform.position;
     }
 

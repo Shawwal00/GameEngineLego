@@ -155,7 +155,7 @@ public class PlaceObject : MonoBehaviour
                     if (!deleteCollider[i].CompareTag("Cursor"))
                     {
                         Destroy(blockCopy = deleteCollider[i].gameObject);
-                        vehicleBlocks.Add(blockCopy);
+                        vehicleBlocks.Remove(blockCopy);
                     }
                 }
             }
@@ -190,7 +190,7 @@ public class PlaceObject : MonoBehaviour
                         if (!checkDoubleCollider[i].CompareTag("Cursor"))
                         {
                             Destroy(blockCopy = checkDoubleCollider[i].gameObject);
-                            vehicleBlocks.Add(blockCopy);
+                            vehicleBlocks.Remove(blockCopy);
                         }
                     }
 

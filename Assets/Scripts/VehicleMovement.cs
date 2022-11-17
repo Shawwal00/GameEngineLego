@@ -3,12 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class VehicleMovement : MonoBehaviour
 {
-    private float speed = 0;
-    private int maxSpeed = 30;
+    private Scene currentScene;
+    private float speed = 300;
+    private int maxSpeed = 300;
     private float acceleration = 0.1f;
 
     private int wheelTouchingCounter = 0;
@@ -24,11 +26,15 @@ public class VehicleMovement : MonoBehaviour
     
     private TextMeshProUGUI fuelText;
     private TextMeshProUGUI speedText;
+
+    private Rigidbody vehicleRigidbody;
     
     public List<GameObject> wheelBlocks {get; set;}
 
     private void Awake()
     {
+        vehicleRigidbody = GetComponent<Rigidbody>();
+        currentScene = SceneManager.GetActiveScene();
         GetComponent<VehicleMovement>().enabled = true;
         wheelBlocks = new List<GameObject>();
         for (int i = 0; i < transform.childCount; i++)
@@ -46,12 +52,15 @@ public class VehicleMovement : MonoBehaviour
                 
                 else if (transform.GetChild(i).tag == "Fuel")
                 {
-                    maxfuel = maxfuel + 50;
+                    maxfuel = maxfuel + 5000;
                 }
             }
-        
-        fuelText = GameObject.Find("Fuel").GetComponent<TextMeshProUGUI>();
-        speedText = GameObject.Find("Speed").GetComponent<TextMeshProUGUI>();
+
+        if (currentScene.name == "VehicleTestScene")
+        {
+            fuelText = GameObject.Find("Fuel").GetComponent<TextMeshProUGUI>();
+            speedText = GameObject.Find("Speed").GetComponent<TextMeshProUGUI>();
+        }
     }
 
     private void Update()
@@ -61,17 +70,14 @@ public class VehicleMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        Debug.Log(wheelBlocks[0]);
         float turn = Input.GetAxis("Turn");
-        
         
         wheelTouchingCounter = 0;
         for (int i = 0; i < wheelBlocks.Count; i++)
         {
             if (wheelBlocks[i].GetComponent<WheelScript>().movement == false)
             {
-               
-                Debug.Log(touching);
+                
                 wheelTouchingCounter = wheelTouchingCounter + 1;
                 if (wheelTouchingCounter == wheelBlocks.Count - 1)
                 {
@@ -106,6 +112,7 @@ public class VehicleMovement : MonoBehaviour
                 back = true;
             }
         }
+      
 
         if (maxfuel < 0)
         {
@@ -125,13 +132,13 @@ public class VehicleMovement : MonoBehaviour
 
         if (forward == true)
         {
-            transform.Translate(Vector3.right * (Time.deltaTime * speed));
+            vehicleRigidbody.AddRelativeForce(new Vector3(1,0,0) * speed);
             maxfuel = maxfuel - 0.2f;
         }
 
         if (back == true)
         {
-            transform.Translate(Vector3.left * (Time.deltaTime * speed));
+            vehicleRigidbody.AddRelativeForce((new Vector3(1,0,0) * -1) * speed);
             maxfuel = maxfuel - 0.2f;
         }
 
