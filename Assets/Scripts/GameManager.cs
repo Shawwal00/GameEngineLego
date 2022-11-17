@@ -39,13 +39,17 @@ public class GameManager : MonoBehaviour
         else
         {
             overallBody.transform.position = finalSeat.transform.position;
+            overallBody.AddComponent<Rigidbody>();
             // Create Empty GameObject and set all the blocks as children under it
             for (int i = 0; i < objectList.vehicleBlocks.Count; i++)
             {
+                Debug.Log(i);
                 objectList.vehicleBlocks[i].transform.SetParent(overallBody.transform);
                 if (objectList.vehicleBlocks[i].tag == "Wheel")
                 {
                     objectList.vehicleBlocks[i].AddComponent<WheelScript>();
+                    objectList.vehicleBlocks[i].AddComponent<WheelCollider>();
+                    objectList.vehicleBlocks[i].GetComponent<BoxCollider>().enabled.Equals(false);
                 }
             }
 
