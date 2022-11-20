@@ -9,9 +9,11 @@ using UnityEngine.UI;
 public class VehicleMovement : MonoBehaviour
 {
     private Scene currentScene;
-    private float speed = 300;
-    private int maxSpeed = 300;
-    private float acceleration = 0.1f;
+    private float speed = 0;
+    private int maxSpeed = 20000;
+    private float acceleration = 100f;
+    private float accelerationIncrease = 100f;
+    private float gravityIncrease = 50;
 
     private int wheelTouchingCounter = 0;
     
@@ -28,14 +30,19 @@ public class VehicleMovement : MonoBehaviour
     private TextMeshProUGUI speedText;
 
     private Rigidbody vehicleRigidbody;
+    private Vector3 forcePosition;
     
     public List<GameObject> wheelBlocks {get; set;}
 
+    
     private void Awake()
     {
         vehicleRigidbody = GetComponent<Rigidbody>();
+        vehicleRigidbody.angularDrag = 100;
+        vehicleRigidbody.mass = 10;
         currentScene = SceneManager.GetActiveScene();
         GetComponent<VehicleMovement>().enabled = true;
+        
         wheelBlocks = new List<GameObject>();
         for (int i = 0; i < transform.childCount; i++)
             {
@@ -47,12 +54,17 @@ public class VehicleMovement : MonoBehaviour
                 else if (transform.GetChild(i).tag == "Engine")
                 {
                     maxSpeed = maxSpeed + 5;
-                    acceleration = acceleration + 0.1f;
+                    acceleration = acceleration + accelerationIncrease;
                 }
                 
                 else if (transform.GetChild(i).tag == "Fuel")
                 {
-                    maxfuel = maxfuel + 5000;
+                    maxfuel = maxfuel + 100;
+                }
+
+                else if (transform.GetChild(i).tag == "Seat")
+                {
+                    forcePosition = transform.GetChild(i).position;
                 }
             }
 
@@ -65,12 +77,19 @@ public class VehicleMovement : MonoBehaviour
 
     private void Update()
     {
-        uiText();
-    }
+        Debug.Log(vehicleRigidbody.velocity);
 
-    private void FixedUpdate()
-    {
-        float turn = Input.GetAxis("Turn");
+        uiText();
+        
+        if (Input.GetKeyUp(KeyCode.W))
+        {
+            forward = false;
+        }
+        
+        if (Input.GetKeyUp(KeyCode.S))
+        {
+            back = false;
+        }
         
         wheelTouchingCounter = 0;
         for (int i = 0; i < wheelBlocks.Count; i++)
@@ -83,6 +102,7 @@ public class VehicleMovement : MonoBehaviour
                 {
                
                     touching = false;
+                    vehicleRigidbody.AddRelativeForce(new Vector3(0,-gravityIncrease * Time.deltaTime, 0));
                 }
             }
             else
@@ -90,25 +110,15 @@ public class VehicleMovement : MonoBehaviour
                 touching = true;
             }
         }
-        
         if (touching == true)
         {
             if (Input.GetKey(KeyCode.W))
             {
-                if (speed < maxSpeed)
-                {
-                    speed = speed + acceleration;
-                }
-
                 forward = true;
             }
 
             if (Input.GetKey(KeyCode.S))
             {
-                if (speed < maxSpeed)
-                {
-                    speed = speed + acceleration;
-                }
                 back = true;
             }
         }
@@ -119,40 +129,51 @@ public class VehicleMovement : MonoBehaviour
             forward = false;
             back = false;
         }
+    }
 
-        if (Input.GetKeyUp(KeyCode.W))
-        {
-            forward = false;
-        }
+    private void FixedUpdate()
+    {
+      
+        float turn = Input.GetAxis("Turn");
         
-        if (Input.GetKeyUp(KeyCode.S))
-        {
-            back = false;
-        }
-
         if (forward == true)
         {
-            vehicleRigidbody.AddRelativeForce(new Vector3(1,0,0) * speed);
+            vehicleRigidbody.AddRelativeForce(new Vector3(speed * Time.deltaTime,0, 0));
+            
             maxfuel = maxfuel - 0.2f;
+            
+            if (speed < maxSpeed)
+            {
+                speed = speed + acceleration;
+            }
+
         }
 
-        if (back == true)
+        else if (back == true)
         {
-            vehicleRigidbody.AddRelativeForce((new Vector3(1,0,0) * -1) * speed);
+            vehicleRigidbody.AddRelativeForce(new Vector3(-speed * Time.deltaTime,0, 0));
+
             maxfuel = maxfuel - 0.2f;
+
+            if (speed < maxSpeed)
+            {
+                speed = speed + acceleration;
+            }
         }
+        
+        else if (forward == false && back == false)
+        {
+            if (speed > 0)
+            {
+                speed = speed - acceleration;
+            }
+        }
+        
+        
 
         if (maxfuel > 0)
         {
             Rotating(turn);
-        }
-
-        if (forward == false && back == false)
-        {
-            if (speed > 0)
-            {
-                speed = speed - 0.5f;
-            }
         }
     }
 
@@ -173,4 +194,5 @@ public class VehicleMovement : MonoBehaviour
         fuelText.text = "fuel = " + maxfuel.ToString();
         speedText.text = "speed = " + speed.ToString();
     }
+    
 }
