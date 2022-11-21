@@ -13,20 +13,40 @@ public class GameManager : MonoBehaviour
 
     private GameObject overallBody;
     private GameObject finalSeat;
-
+    
+    private GameObject spawn;
     [SerializeField] public PlaceObject objectList;
     
     private string savePath;
+    
+    private Scene currentScene;
+
+    private bool creation = false;
 
 
     private void Awake()
     {
-        saveButton = GameObject.Find("Save").GetComponent<Button>();
-        saveButton.onClick.AddListener(saveCreation);
+        currentScene = SceneManager.GetActiveScene();
 
-        overallBody = GameObject.Find("OveralBody");
-        
-        
+        if (currentScene.name == "EditorScreen")
+        {
+            saveButton = GameObject.Find("Save").GetComponent<Button>();
+            saveButton.onClick.AddListener(saveCreation);
+
+            overallBody = GameObject.Find("OveralBody");
+        }
+    }
+
+    private void Update()
+    {
+        if (currentScene.name == "VehicleTestScene" && creation == false)
+        {
+            spawn = GameObject.Find("Spawn");
+            Debug.Log(overallBody);
+            Instantiate(overallBody, spawn.transform.position, spawn.transform.rotation);
+            creation = true;
+        }
+
     }
 
     private void saveCreation()
@@ -61,6 +81,7 @@ public class GameManager : MonoBehaviour
             PrefabUtility.SaveAsPrefabAsset(overallBody, savePath);
 
             SceneManager.LoadScene("VehicleTestScene");
+        
         }
 
     }

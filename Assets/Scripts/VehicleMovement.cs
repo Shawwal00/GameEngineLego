@@ -10,7 +10,7 @@ public class VehicleMovement : MonoBehaviour
 {
     private Scene currentScene;
     private float speed = 0;
-    private int maxSpeed = 20000;
+    private int maxSpeed = 10000;
     private float acceleration = 100f;
     private float accelerationIncrease = 100f;
     private float gravityIncrease = 50;
