@@ -22,11 +22,9 @@ public class PlaceObject : MonoBehaviour
     private GameObject cursor;
 
     private bool firstBlock = false;
-
     private bool seatCursorMove = false;
     private bool fuelCursorMove = false;
     private bool otherCursorMove = false;
-
     private bool seatPlaced = false;
 
     private int currentBuildingObject = 0;
@@ -40,6 +38,7 @@ public class PlaceObject : MonoBehaviour
         
     private void Awake()
     {
+        // To find the blocks later on
         seat.tag = "Seat";
         gridBlock.tag = "BaseBlock";
         engine.tag = "Engine";
@@ -48,6 +47,7 @@ public class PlaceObject : MonoBehaviour
         
         cursor = GameObject.Find("Cursor");
 
+        //for the Raycast
         cursorVector = new List<Vector3>();
         cursorVector.Add( new Vector3(-1,0,0));
         cursorVector.Add( new Vector3(1,0,0));
@@ -56,13 +56,13 @@ public class PlaceObject : MonoBehaviour
         cursorVector.Add( new Vector3(0,0,1));
         cursorVector.Add( new Vector3(0,0,-1));
 
+        //Adding in the diffrent blocks
         buildingObjects = new List<GameObject>();
         buildingObjects.Add(gridBlock);
         buildingObjects.Add(engine);
         buildingObjects.Add(wheel);
         buildingObjects.Add(fuel);
         buildingObjects.Add(seat);
-
         buildingLimitMax = buildingObjects.Count - 1;
 
         blockText = GameObject.Find("CurrentBlock").GetComponent<TextMeshProUGUI>();
@@ -166,6 +166,7 @@ public class PlaceObject : MonoBehaviour
         {
             Debug.Log(seatPlaced);
 
+            // the First block
             if (firstBlock == false)
             {
                 blockCopy = Instantiate(buildingObjects[currentBuildingObject], cursor.transform.position,
@@ -174,6 +175,7 @@ public class PlaceObject : MonoBehaviour
                 vehicleBlocks.Add(blockCopy);
             }
 
+            // Any blocks after
             else if (firstBlock == true)
             {
                 // Checks to see if there is already a bloc there and if so it will delete it.
@@ -209,7 +211,6 @@ public class PlaceObject : MonoBehaviour
                             cursor.transform.rotation);
                         vehicleBlocks.Add(blockCopy);
                     }
-                    
                 }
 
                 else

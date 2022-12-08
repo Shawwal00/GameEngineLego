@@ -9,20 +9,18 @@ using UnityEngine.UI;
 public class VehicleMovement : MonoBehaviour
 {
     private Scene currentScene;
-    private float speed = 0;
+    
     private int maxSpeed = 10000;
+    private int wheelTouchingCounter = 0;
+    
+    private float speed = 0;
     private float acceleration = 100f;
     private float accelerationIncrease = 100f;
     private float gravityIncrease = 50;
-
-    private int wheelTouchingCounter = 0;
-    
     private float maxfuel = 0;
-    
     private float sensitivityX = 1.0f;
 
     private bool touching = false;
-
     private bool forward = false;
     private bool back = false;
     
@@ -43,6 +41,7 @@ public class VehicleMovement : MonoBehaviour
         currentScene = SceneManager.GetActiveScene();
         GetComponent<VehicleMovement>().enabled = true;
         
+        // Setting up the various diffrent blocks
         wheelBlocks = new List<GameObject>();
         for (int i = 0; i < transform.childCount; i++)
             {
@@ -77,9 +76,8 @@ public class VehicleMovement : MonoBehaviour
 
     private void Update()
     {
-        Debug.Log(vehicleRigidbody.velocity);
-
         uiText();
+        wheelCheck();
         
         if (Input.GetKeyUp(KeyCode.W))
         {
@@ -91,39 +89,6 @@ public class VehicleMovement : MonoBehaviour
             back = false;
         }
         
-        wheelTouchingCounter = 0;
-        for (int i = 0; i < wheelBlocks.Count; i++)
-        {
-            if (wheelBlocks[i].GetComponent<WheelScript>().movement == false)
-            {
-                
-                wheelTouchingCounter = wheelTouchingCounter + 1;
-                if (wheelTouchingCounter == wheelBlocks.Count - 1)
-                {
-               
-                    touching = false;
-                    vehicleRigidbody.AddRelativeForce(new Vector3(0,-gravityIncrease * Time.deltaTime, 0));
-                }
-            }
-            else
-            {
-                touching = true;
-            }
-        }
-        if (touching == true)
-        {
-            if (Input.GetKey(KeyCode.W))
-            {
-                forward = true;
-            }
-
-            if (Input.GetKey(KeyCode.S))
-            {
-                back = true;
-            }
-        }
-      
-
         if (maxfuel < 0)
         {
             forward = false;
@@ -194,5 +159,40 @@ public class VehicleMovement : MonoBehaviour
         fuelText.text = "fuel = " + maxfuel.ToString();
         speedText.text = "speed = " + speed.ToString();
     }
-    
+
+    private void wheelCheck()
+    {
+        wheelTouchingCounter = 0;
+        for (int i = 0; i < wheelBlocks.Count; i++)
+        {
+            if (wheelBlocks[i].GetComponent<WheelScript>().movement == false)
+            {
+                
+                wheelTouchingCounter = wheelTouchingCounter + 1;
+                if (wheelTouchingCounter == wheelBlocks.Count - 1)
+                {
+               
+                    touching = false;
+                    vehicleRigidbody.AddRelativeForce(new Vector3(0,-gravityIncrease * Time.deltaTime, 0));
+                }
+            }
+            else
+            {
+                touching = true;
+            }
+        }
+        if (touching == true)
+        {
+            if (Input.GetKey(KeyCode.W))
+            {
+                forward = true;
+            }
+
+            if (Input.GetKey(KeyCode.S))
+            {
+                back = true;
+            }
+        }
+    }
+
 }

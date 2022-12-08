@@ -20,6 +20,9 @@ public class WheelScript : MonoBehaviour
         wheelCollider = GetComponent<WheelCollider>();
         boxCollider = GetComponent<BoxCollider>();
 
+        
+        // most of the below are the default values but I did it like this so that
+        // I could easily change the values
         wheelCollider.radius = 0.5f;
         wheelCollider.mass = 1;
         

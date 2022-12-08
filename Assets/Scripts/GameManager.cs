@@ -22,10 +22,13 @@ public class GameManager : MonoBehaviour
     private Scene currentScene;
 
     private bool creation = false;
-
+    
+    GameObject[] vehicleAssets {get; set;}
+    private int folderLength;
 
     private void Awake()
     {
+        
         currentScene = SceneManager.GetActiveScene();
 
         if (currentScene.name == "EditorScreen")
@@ -41,6 +44,14 @@ public class GameManager : MonoBehaviour
     {
         if (currentScene.name == "VehicleTestScene" && creation == false)
         {
+
+            vehicleAssets = Resources.LoadAll<GameObject>("");
+            folderLength = vehicleAssets.Length;
+            folderLength = folderLength - 1;
+            
+            overallBody = Resources.Load<GameObject>("Vehicle " + folderLength  );
+            Debug.Log("Vehicle" + folderLength);
+
             spawn = GameObject.Find("Spawn");
             Debug.Log(overallBody);
             Instantiate(overallBody, spawn.transform.position, spawn.transform.rotation);
@@ -76,7 +87,7 @@ public class GameManager : MonoBehaviour
 
             overallBody.AddComponent<VehicleMovement>();
             overallBody.tag = "Vehicle";
-            savePath = "Assets/MachineSaves/Vehicle.prefab";
+            savePath = "Assets/MachineSaves/Resources/Vehicle.prefab";
             savePath = AssetDatabase.GenerateUniqueAssetPath(savePath);
             PrefabUtility.SaveAsPrefabAsset(overallBody, savePath);
 

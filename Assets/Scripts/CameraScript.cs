@@ -12,12 +12,12 @@ public class CameraScript : MonoBehaviour
     private float mouseY;
     private float mouseZ;
     private Vector3 offset;
-
     private Scene currentScene;
 
     private void Start()
     {
         currentScene = SceneManager.GetActiveScene();
+        //Finds vehicle
         if (currentScene.name == "VehicleTestScene")
         {
             target = GameObject.FindWithTag("Vehicle");
