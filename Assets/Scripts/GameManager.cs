@@ -54,7 +54,8 @@ public class GameManager : MonoBehaviour
 
             spawn = GameObject.Find("Spawn");
             Debug.Log(overallBody);
-            Instantiate(overallBody, spawn.transform.position, spawn.transform.rotation);
+            // Need to fix below
+           // Instantiate(overallBody, spawn.transform.position, spawn.transform.rotation);
             creation = true;
         }
 

@@ -20,14 +20,16 @@ public class CameraScript : MonoBehaviour
         //Finds vehicle
         if (currentScene.name == "VehicleTestScene")
         {
+            
             target = GameObject.FindWithTag("Vehicle");
         }
-
         offset = transform.position - target.transform.position;
     }
 
     private void Update()
     {
+  
+        
         mouseX = Input.GetAxis("Mouse X");
         mouseY = Input.GetAxis("Mouse Y");
         mouseZ = Input.GetAxis("Mouse ScrollWheel");
